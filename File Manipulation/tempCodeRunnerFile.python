@@ -1,0 +1,55 @@
+import re
+from collections import defaultdict
+
+def count_words(filename):
+    """
+    Counts word occurrences in a text file and returns sorted results.
+    
+    Args:
+        filename (str): Path to the text file
+        
+    Returns:
+        dict: {word: count} sorted alphabetically
+    """
+    word_counts = defaultdict(int)
+    
+    try:
+        with open(filename, 'r', encoding='utf-8') as file:
+            for line in file:
+                # Remove punctuation and split into words
+                words = re.findall(r'\b\w+\b', line.lower())
+                for word in words:
+                    word_counts[word] += 1
+                    
+    except FileNotFoundError:
+        print(f"Error: File '{filename}' not found.")
+        return None
+    except Exception as e:
+        print(f"An error occurred: {e}")
+        return None
+    
+    return dict(sorted(word_counts.items()))
+
+def main():
+    print("WORD COUNT ANALYZER")
+    print("-------------------")
+    
+    while True:
+        filename = input("\nEnter file path (or 'quit' to exit): ").strip()
+        
+        if filename.lower() == 'quit':
+            print("Goodbye!")
+            break
+            
+        results = count_words(filename)
+        
+        if results:
+            print("\nWord Count Results:")
+            max_word_length = max(len(word) for word in results) if results else 0
+            for word, count in results.items():
+                print(f"{word.ljust(max_word_length + 2)}: {count}")
+            
+            print(f"\nTotal unique words: {len(results)}")
+
+if __name__ == "__main__":
+    main()
